@@ -10,9 +10,9 @@
         android:icon="@mipmap/logoprevi"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/NoTitleBar"
-        android:screenOrientation="portrait">
+        android:theme="@style/NoTitleBar">
         <activity android:name=".Splash_Screen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,9 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name="com.worklight.wlclient.ui.UIActivity" />
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".opcoes_de_voto" />
+        <activity android:name=".Confirmar_voto"></activity>
     </application>
 
 </manifest>

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Votação Previ</string>
+    <string name="titulo">Simulação votação Previ - TAA</string>
+    <string name="voto">CHAPA</string>
 </resources>
