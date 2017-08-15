@@ -87,45 +87,18 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView13" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="101dp"
-        android:layout_height="53dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@drawable/cantos_arredondados_azul"
-        android:text="Continuar"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/imageView7"
-        app:layout_constraintRight_toLeftOf="@+id/button5" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="101dp"
-        android:layout_height="53dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/cantos_arredondados_azul"
-        android:text="Sair"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/imageView7"
-        app:layout_constraintRight_toRightOf="parent" />
-
     <RadioGroup
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/button4"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
-        app:layout_constraintVertical_bias="1.0">
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/CONTINUAR_OPCOES">
 
         <RadioButton
             android:id="@+id/radioButton2"
@@ -169,7 +142,34 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Nulo"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </RadioGroup>
+
+    <Button
+        android:id="@+id/CONTINUAR_OPCOES"
+        android:layout_width="101dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/cantos_arredondados_azul"
+        android:text="Continuar"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/imageView7"
+        app:layout_constraintRight_toLeftOf="@+id/SAIR_OPCOES" />
+
+    <Button
+        android:id="@+id/SAIR_OPCOES"
+        android:layout_width="101dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/cantos_arredondados_azul"
+        android:text="Sair"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/imageView7"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

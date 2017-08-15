@@ -108,7 +108,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/SIM_CONFIRMAR"
         android:layout_width="101dp"
         android:layout_height="53dp"
         android:layout_marginBottom="8dp"
@@ -126,7 +126,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <Button
-        android:id="@+id/button6"
+        android:id="@+id/NAO_CONFIRMAR"
         android:layout_width="101dp"
         android:layout_height="53dp"
         android:layout_marginBottom="8dp"

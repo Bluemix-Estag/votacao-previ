@@ -1,25 +1,38 @@
 package com.bakery.code.votacaoprevi;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 public class opcoes_de_voto extends Activity {
 
-    private Button botao;
+    private Button continuar;
+    private Button sair;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opcoes_de_voto);
 
-        botao = (Button) findViewById(R.id.button4);
+        continuar = (Button) findViewById(R.id.CONTINUAR_OPCOES);
+        sair = (Button) findViewById(R.id.SAIR_OPCOES);
 
-        botao.setOnClickListener(new View.OnClickListener() {
+        continuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(opcoes_de_voto.this, Confirmar_voto.class);
+                startActivity(intent);
+
+            }
+        });
+
+        sair.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(opcoes_de_voto.this, LoginActivity.class);
+                startActivity(intent);
 
             }
         });
