@@ -10,22 +10,26 @@
         android:icon="@mipmap/logoprevi"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/NoTitleBar">
-        <activity android:name=".Splash_Screen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
+        <activity android:name=".Splash_Screen" android:screenOrientation="portrait">
+
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
+
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name="com.worklight.wlclient.ui.UIActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".opcoes_de_voto" />
-        <activity android:name=".Confirmar_voto" />
-        <activity android:name=".Fim_voto"></activity>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" />
+        <activity android:name="com.worklight.wlclient.ui.UIActivity" android:screenOrientation="portrait" />
+        <activity android:name=".LoginActivity" android:screenOrientation="portrait" />
+        <activity android:name=".opcoes_de_voto" android:screenOrientation="portrait" />
+        <activity android:name=".Confirmar_voto" android:screenOrientation="portrait" />
+        <activity android:name=".Fim_voto" android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
