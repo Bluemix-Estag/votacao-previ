@@ -24,7 +24,8 @@
         <activity android:name="com.worklight.wlclient.ui.UIActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".opcoes_de_voto" />
-        <activity android:name=".Confirmar_voto"></activity>
+        <activity android:name=".Confirmar_voto" />
+        <activity android:name=".Fim_voto"></activity>
     </application>
 
 </manifest>
