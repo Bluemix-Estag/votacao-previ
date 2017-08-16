@@ -8,7 +8,7 @@
     tools:context="com.bakery.code.votacaoprevi.LoginActivity">
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/LOGIN"
         android:layout_width="230dp"
         android:layout_height="41dp"
         android:layout_marginEnd="8dp"
@@ -27,7 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/User_invalido" />/>
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/SENHA"
         android:layout_width="230dp"
         android:layout_height="41dp"
         android:layout_marginEnd="8dp"
@@ -61,7 +61,7 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/LOGIN" />
 
     <Button
         android:id="@+id/CONTINUAR_LOGIN"
@@ -74,7 +74,7 @@
         android:text="Continuar"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/imageView3"
-        app:layout_constraintLeft_toLeftOf="@+id/editText4" />
+        app:layout_constraintLeft_toLeftOf="@+id/SENHA" />
 
     <Button
         android:id="@+id/SAIR_LOGIN"
@@ -87,7 +87,7 @@
         android:text="Sair"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/imageView3"
-        app:layout_constraintRight_toRightOf="@+id/editText4" />
+        app:layout_constraintRight_toRightOf="@+id/SENHA" />
 
     <TextView
         android:id="@+id/textView"
@@ -96,8 +96,8 @@
         android:text="Matricula"
         android:textColor="@color/azul_previ"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/editText3"
-        app:layout_constraintLeft_toLeftOf="@+id/editText3" />
+        app:layout_constraintBottom_toTopOf="@+id/LOGIN"
+        app:layout_constraintLeft_toLeftOf="@+id/LOGIN" />
 
     <TextView
         android:id="@+id/textView2"
@@ -106,30 +106,32 @@
         android:text="Senha"
         android:textColor="@color/azul_previ"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/editText4"
-        app:layout_constraintLeft_toLeftOf="@+id/editText4" />
+        app:layout_constraintBottom_toTopOf="@+id/SENHA"
+        app:layout_constraintLeft_toLeftOf="@+id/SENHA" />
 
     <TextView
         android:id="@+id/User_invalido"
-        android:layout_width="183dp"
-        android:layout_height="23dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:gravity="center"
         android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toRightOf="@+id/imageView"
-        app:layout_constraintRight_toRightOf="@+id/editText3"
-        android:layout_marginTop="19dp"
+        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintLeft_toRightOf="@+id/INVALID_IMG"
+        app:layout_constraintRight_toRightOf="@+id/LOGIN"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="35dp"
-        android:layout_height="31dp"
-        app:layout_constraintBottom_toBottomOf="@+id/User_invalido"
-        app:layout_constraintLeft_toLeftOf="@+id/editText3"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="1.0" />
+        android:id="@+id/INVALID_IMG"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/LOGIN"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <ImageView
         android:id="@+id/imageView2"
