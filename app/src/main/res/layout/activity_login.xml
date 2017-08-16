@@ -19,6 +19,7 @@
         android:background="@drawable/cantos_arredondados_branco"
         android:ems="10"
         android:inputType="number"
+        android:maxLength="11"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:textStyle="bold"
