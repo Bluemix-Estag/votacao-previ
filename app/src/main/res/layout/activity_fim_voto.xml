@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/imageView13"
         android:layout_width="0dp"
-        android:layout_height="4dp"
+        android:layout_height="2dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/bar"
         app:layout_constraintHorizontal_bias="0.0"
@@ -93,7 +93,7 @@
     <Button
         android:id="@+id/SAIR_FIM"
         android:layout_width="101dp"
-        android:layout_height="53dp"
+        android:layout_height="30dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
