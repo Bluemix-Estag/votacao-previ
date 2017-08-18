@@ -42,9 +42,8 @@ public class Splash_Screen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash__screen);
 
-        Handler handler = new Handler();
 
-        client = WLClient.createInstance(this);
+        client = MobileFirstAdapter.getMfpClient(this);
 
         mpfAdapter = MobileFirstAdapter.getMfpInstance();
         mpfAdapter.obtainAccessToken("", new WLAccessTokenListener() {

@@ -1,10 +1,12 @@
 package com.bakery.code.votacaoprevi;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.worklight.wlclient.api.WLAccessTokenListener;
 import com.worklight.wlclient.api.WLAuthorizationManager;
+import com.worklight.wlclient.api.WLClient;
 import com.worklight.wlclient.api.WLFailResponse;
 import com.worklight.wlclient.api.WLResourceRequest;
 import com.worklight.wlclient.api.WLResponse;
@@ -21,6 +23,14 @@ import java.net.URISyntaxException;
 public class MobileFirstAdapter {
 
     private static WLAuthorizationManager mfpInstance;
+    private static WLClient client;
+
+    public static WLClient getMfpClient(Context context){
+        if(client == null){
+            client = WLClient.createInstance(context).getInstance();
+        }
+        return client;
+    }
 
     public static WLAuthorizationManager getMfpInstance(){
         if(mfpInstance == null){

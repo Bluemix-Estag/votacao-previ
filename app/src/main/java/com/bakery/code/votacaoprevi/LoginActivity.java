@@ -18,11 +18,21 @@ import com.bakery.code.votacaoprevi.models.Votacao;
 import com.google.android.gms.safetynet.SafetyNet;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.worklight.wlclient.api.WLAccessTokenListener;
+import com.worklight.wlclient.api.WLAuthorizationManager;
 import com.worklight.wlclient.api.WLClient;
+import com.worklight.wlclient.api.WLFailResponse;
+import com.worklight.wlclient.api.WLResourceRequest;
+import com.worklight.wlclient.api.WLResponse;
+import com.worklight.wlclient.api.WLResponseListener;
+import com.worklight.wlclient.auth.AccessToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final String RECAPTCHA_TOKEN = "6LcO8iwUAAAAAPQqSDrqcgoQrg0wUYI2de_gLl_-";
 
     private WLClient client;
+    private WLAuthorizationManager mfpAdapter;
+
+    String chapas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +66,10 @@ public class LoginActivity extends AppCompatActivity {
         senha = (TextView) findViewById(R.id.SENHA);
         titulo = (TextView) findViewById(R.id.Titulo);
 
+        //teste com credenciais
+        login.setText("20274526301");
+        senha.setText("123quatro");
+
         //acessar extras vindo da splash screen
         Intent i = getIntent();
 
@@ -66,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             if(extras.containsKey("chapas")){
                 System.out.println("Tem as chapas");
-                String chapas = extras.getString("chapas");
+                chapas = extras.getString("chapas");
 
                 try {
                     JSONArray array = new JSONArray(chapas);
@@ -79,28 +96,14 @@ public class LoginActivity extends AppCompatActivity {
 
         //titulo.setText(votacao.getNome());
 
-        client = WLClient.createInstance(this);
+        client = MobileFirstAdapter.getMfpClient(this);
 
+        mfpAdapter = MobileFirstAdapter.getMfpInstance();
 
         continuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //Credenciais do usuario
-                String Login = login.getText().toString();
-                String senhaUser = senha.getText().toString();
-
-                //criação do objeto usuario
-                User usuario = new User(Login,senhaUser);
-
-                final JSONObject userJson = new JSONObject();
-
-                try{
-                    userJson.put("cpf",usuario.getCpf());
-                    userJson.put("senha",usuario.getSenha());
-                }catch (JSONException e){
-                    e.printStackTrace();
-                }
 
                 //verificações de input
                 if (TextUtils.isEmpty(login.getText().toString())){
@@ -110,14 +113,82 @@ public class LoginActivity extends AppCompatActivity {
                     erro_mens.setText("Senha não preenchida");
                     erro_img.setImageResource(android.R.drawable.ic_delete);
                 }else{
+                    //Credenciais do usuario
+                    String Login = login.getText().toString();
+                    String senhaUser = senha.getText().toString();
+
+                    //criação do objeto usuario
+                    final User usuario = new User(Login,senhaUser);
+
+                    final JSONObject userJson = new JSONObject();
+
+                    try{
+                        userJson.put("cpf",usuario.getCpf());
+                        userJson.put("senha",usuario.getSenha());
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                    }
                     //Validação de CPF
                     if (ValidaCPF.isCPF(Login) == true){
 
                         SafetyNet.getClient(LoginActivity.this).verifyWithRecaptcha(RECAPTCHA_TOKEN).addOnSuccessListener(LoginActivity.this, new OnSuccessListener() {
                                     @Override
                                     public void onSuccess(Object o) {
-                                        Intent intent = new Intent(LoginActivity.this, opcoes_de_voto.class);
-                                        startActivity(intent);
+                                        mfpAdapter.obtainAccessToken("", new WLAccessTokenListener() {
+                                            @Override
+                                            public void onSuccess(AccessToken accessToken) {
+                                                System.out.println("Received token: " + accessToken);
+
+                                                URI adapterPath = null;
+                                                try {
+                                                    adapterPath = new URI("/adapters/CloudantAdapter/resource/login");
+                                                } catch (URISyntaxException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                WLResourceRequest request = new WLResourceRequest(adapterPath, WLResourceRequest.POST);
+
+                                                request.send(userJson,new WLResponseListener() {
+                                                    @Override
+                                                    public void onSuccess(WLResponse wlResponse) {
+                                                        // Will print "Hello world" in LogCat.
+                                                        Log.i("MobileFirst Acionado", "Success: " + wlResponse.getResponseText());
+
+                                                        try {
+                                                            if(wlResponse.getResponseJSON().getString("error").equals("true")){
+                                                                runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        erro_mens.setText("Acesso negado, seu voto já foi registrado, agradecemos a sua participação!");
+                                                                        erro_img.setImageResource(android.R.drawable.ic_delete);
+                                                                    }
+                                                                });
+                                                            }else{
+                                                                Intent intent = new Intent(LoginActivity.this, opcoes_de_voto.class);
+                                                                intent.putExtra("nomeVotacao", titulo.getText().toString());
+                                                                intent.putExtra("chapas",chapas);
+                                                                intent.putExtra("user",usuario.getCpf());
+                                                                startActivity(intent);
+                                                            }
+
+
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(WLFailResponse wlFailResponse) {
+                                                        Log.i("MobileFirst Quick Start", "Failure: " + wlFailResponse.getErrorMsg());
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onFailure(WLFailResponse wlFailResponse) {
+
+                                            }
+                                        });
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
