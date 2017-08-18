@@ -1,13 +1,11 @@
 package com.bakery.code.votacaoprevi;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -15,14 +13,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.CommonStatusCodes;
+import com.bakery.code.votacaoprevi.models.User;
+import com.bakery.code.votacaoprevi.models.Votacao;
 import com.google.android.gms.safetynet.SafetyNet;
-import com.google.android.gms.safetynet.SafetyNetApi;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.worklight.wlclient.api.WLClient;
 
-import java.util.concurrent.Executor;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -33,9 +33,12 @@ public class LoginActivity extends AppCompatActivity {
     private TextView senha;
     private TextView erro_mens;
     private ImageView erro_img;
-    private TextCaptcha textCaptcha;
     private ImageView captcha;
     private Button Call;
+    private TextView titulo;
+    private static final String RECAPTCHA_TOKEN = "6LcO8iwUAAAAAPQqSDrqcgoQrg0wUYI2de_gLl_-";
+
+    private WLClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +51,58 @@ public class LoginActivity extends AppCompatActivity {
         erro_mens = (TextView) findViewById(R.id.User_invalido);
         erro_img = (ImageView) findViewById(R.id.INVALID_IMG);
         senha = (TextView) findViewById(R.id.SENHA);
-        //captcha = (ImageView) findViewById(R.id.CAPTCHA);
+        titulo = (TextView) findViewById(R.id.Titulo);
 
-        //textCaptcha = new TextCaptcha(600, 150, 6, TextCaptcha.TextOptions.LETTERS_ONLY);;
-        //captcha.setImageBitmap(textCaptcha.getImage());
+        //acessar extras vindo da splash screen
+        Intent i = getIntent();
 
+        Bundle extras = i.getExtras();
+        if(extras != null){
+            System.out.println("Tem os extras");
+            if (extras.containsKey("votacao")) {
+                Votacao votacao = extras.getParcelable("votacao");
+                titulo.setText(votacao.getNome());
 
+            }
+            if(extras.containsKey("chapas")){
+                System.out.println("Tem as chapas");
+                String chapas = extras.getString("chapas");
+
+                try {
+                    JSONArray array = new JSONArray(chapas);
+                    System.out.println(array.toString(2));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //titulo.setText(votacao.getNome());
+
+        client = WLClient.createInstance(this);
 
 
         continuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Credenciais do usuario
                 String Login = login.getText().toString();
+                String senhaUser = senha.getText().toString();
+
+                //criação do objeto usuario
+                User usuario = new User(Login,senhaUser);
+
+                final JSONObject userJson = new JSONObject();
+
+                try{
+                    userJson.put("cpf",usuario.getCpf());
+                    userJson.put("senha",usuario.getSenha());
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                //verificações de input
                 if (TextUtils.isEmpty(login.getText().toString())){
                     erro_mens.setText("Login não preenchido");
                     erro_img.setImageResource(android.R.drawable.ic_delete);
@@ -67,8 +110,10 @@ public class LoginActivity extends AppCompatActivity {
                     erro_mens.setText("Senha não preenchida");
                     erro_img.setImageResource(android.R.drawable.ic_delete);
                 }else{
+                    //Validação de CPF
                     if (ValidaCPF.isCPF(Login) == true){
-                        SafetyNet.getClient(LoginActivity.this).verifyWithRecaptcha("6LcO8iwUAAAAAPQqSDrqcgoQrg0wUYI2de_gLl_-").addOnSuccessListener(LoginActivity.this, new OnSuccessListener() {
+
+                        SafetyNet.getClient(LoginActivity.this).verifyWithRecaptcha(RECAPTCHA_TOKEN).addOnSuccessListener(LoginActivity.this, new OnSuccessListener() {
                                     @Override
                                     public void onSuccess(Object o) {
                                         Intent intent = new Intent(LoginActivity.this, opcoes_de_voto.class);
