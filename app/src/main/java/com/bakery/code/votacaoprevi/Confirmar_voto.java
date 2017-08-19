@@ -2,12 +2,12 @@ package com.bakery.code.votacaoprevi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bakery.code.votacaoprevi.helper.MobileFirstAdapter;
 import com.bakery.code.votacaoprevi.models.Voto;
 import com.worklight.wlclient.api.WLAccessTokenListener;
 import com.worklight.wlclient.api.WLAuthorizationManager;
@@ -18,7 +18,6 @@ import com.worklight.wlclient.api.WLResponse;
 import com.worklight.wlclient.api.WLResponseListener;
 import com.worklight.wlclient.auth.AccessToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

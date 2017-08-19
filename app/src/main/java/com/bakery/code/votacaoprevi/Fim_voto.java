@@ -22,7 +22,9 @@ public class Fim_voto extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Fim_voto.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                finish();
             }
         });
     }

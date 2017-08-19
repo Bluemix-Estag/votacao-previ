@@ -2,14 +2,11 @@ package com.bakery.code.votacaoprevi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
+import com.bakery.code.votacaoprevi.helper.MobileFirstAdapter;
 import com.bakery.code.votacaoprevi.models.Votacao;
 import com.worklight.wlclient.api.WLAccessTokenListener;
 import com.worklight.wlclient.api.WLAuthorizationManager;

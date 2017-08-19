@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bakery.code.votacaoprevi.helper.MobileFirstAdapter;
+import com.bakery.code.votacaoprevi.helper.ValidaCPF;
 import com.bakery.code.votacaoprevi.models.User;
 import com.bakery.code.votacaoprevi.models.Votacao;
 import com.google.android.gms.safetynet.SafetyNet;
@@ -169,6 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                                                                 intent.putExtra("chapas",chapas);
                                                                 intent.putExtra("user",usuario.getCpf());
                                                                 startActivity(intent);
+                                                                finish();
                                                             }
 
 
@@ -212,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                finishAffinity();
+                finish();
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.bakery.code.votacaoprevi;
+package com.bakery.code.votacaoprevi.helper;
 
 import java.util.InputMismatchException;
 
