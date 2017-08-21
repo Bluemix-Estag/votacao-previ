@@ -1,8 +1,12 @@
 package com.bakery.code.votacaoprevi;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,8 +25,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 public class Splash_Screen extends Activity {
 
@@ -30,6 +37,7 @@ public class Splash_Screen extends Activity {
     private WLClient client;
     private JSONObject votacaoData;
     private Votacao votacao;
+    private static final String LOG_TAG = "Connectivity";
 
 
 
@@ -39,77 +47,99 @@ public class Splash_Screen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash__screen);
 
+        Handler handler = new Handler();
 
-        client = MobileFirstAdapter.getMfpClient(this);
-
-        mpfAdapter = MobileFirstAdapter.getMfpInstance();
-        mpfAdapter.obtainAccessToken("", new WLAccessTokenListener() {
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onSuccess(AccessToken accessToken) {
-                System.out.println("Received token: " + accessToken);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),"Conected to Mobile First Platform", Toast.LENGTH_SHORT).show();
+            public void run() {
+                if(!isNetworkAvailable()){
+                    Toast.makeText(Splash_Screen.this, "Não há conexão com a internet.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        },2000);
+
+
+            client = MobileFirstAdapter.getMfpClient(this);
+
+
+            mpfAdapter = MobileFirstAdapter.getMfpInstance();
+            mpfAdapter.obtainAccessToken("", new WLAccessTokenListener() {
+                @Override
+                public void onSuccess(AccessToken accessToken) {
+                    System.out.println("Received token: " + accessToken);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Conected to Mobile First Platform", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    URI adapterPath = null;
+                    try {
+                        adapterPath = new URI("/adapters/CloudantAdapter/resource/votacao");
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
                     }
-                });
-                URI adapterPath = null;
-                try {
-                    adapterPath = new URI("/adapters/CloudantAdapter/resource/votacao");
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
+
+                    WLResourceRequest request = new WLResourceRequest(adapterPath, WLResourceRequest.GET);
+
+                    request.send(new WLResponseListener() {
+                        @Override
+                        public void onSuccess(WLResponse wlResponse) {
+                            votacaoData = wlResponse.getResponseJSON();
+                            try {
+                                JSONObject votacaoAtual = votacaoData.getJSONObject("votacaoAtual");
+
+                                //Recuperar informaçoes da votacao
+                                String nomeVotacao = votacaoAtual.getString("nome");
+                                String infoVotacao = votacaoAtual.getString("info");
+                                String iniVotacao = votacaoAtual.getString("iniVotacao");
+                                String fimVotacao = votacaoAtual.getString("fimVotacao");
+                                JSONArray chapas = votacaoAtual.getJSONArray("chapas");
+
+                                Log.i("MobileFirst Acionado", "Success: " + nomeVotacao);
+                                //configurar o objeto votacao a ser passado
+                                votacao = new Votacao();
+
+                                votacao.setNome(nomeVotacao);
+                                votacao.setInfo(infoVotacao);
+                                votacao.setIniVotacao(iniVotacao);
+                                votacao.setFimVotacao(fimVotacao);
+
+
+                                showLogin(votacao, chapas);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Log.i("MobileFirst Acionado", "Success: " + wlResponse.getResponseText());
+
+                        }
+
+                        @Override
+                        public void onFailure(WLFailResponse wlFailResponse) {
+                            Log.i("MobileFirst Quick Start", "Failure: " + wlFailResponse.getErrorMsg());
+                        }
+                    });
                 }
 
-                WLResourceRequest request = new WLResourceRequest(adapterPath, WLResourceRequest.GET);
+                @Override
+                public void onFailure(WLFailResponse wlFailResponse) {
 
-                request.send(new WLResponseListener() {
-                    @Override
-                    public void onSuccess(WLResponse wlResponse) {
-                        votacaoData = wlResponse.getResponseJSON();
-                        try{
-                            JSONObject votacaoAtual = votacaoData.getJSONObject("votacaoAtual");
+                }
+            });
 
-                            //Recuperar informaçoes da votacao
-                            String nomeVotacao = votacaoAtual.getString("nome");
-                            String infoVotacao = votacaoAtual.getString("info");
-                            String iniVotacao = votacaoAtual.getString("iniVotacao");
-                            String fimVotacao = votacaoAtual.getString("fimVotacao");
-                            JSONArray chapas = votacaoAtual.getJSONArray("chapas");
-
-                            Log.i("MobileFirst Acionado", "Success: " + nomeVotacao);
-                            //configurar o objeto votacao a ser passado
-                            votacao = new Votacao();
-
-                            votacao.setNome(nomeVotacao);
-                            votacao.setInfo(infoVotacao);
-                            votacao.setIniVotacao(iniVotacao);
-                            votacao.setFimVotacao(fimVotacao);
+        }
 
 
-
-                            showLogin(votacao, chapas);
-
-                        }catch (JSONException e){
-                            e.printStackTrace();
-                        }
-                        Log.i("MobileFirst Acionado", "Success: " + wlResponse.getResponseText());
-
-                    }
-
-                    @Override
-                    public void onFailure(WLFailResponse wlFailResponse) {
-                        Log.i("MobileFirst Quick Start", "Failure: " + wlFailResponse.getErrorMsg());
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(WLFailResponse wlFailResponse) {
-
-            }
-        });
-
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
+
+
 
     private void showLogin(Votacao v, JSONArray chapas) {
         Intent intent = new Intent(Splash_Screen.this, LoginActivity.class);
