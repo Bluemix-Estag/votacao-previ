@@ -53,7 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     private WLClient client;
     private WLAuthorizationManager mfpAdapter;
 
-    String chapas;
+    private String chapas;
+    private String tituloVotacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +78,11 @@ public class LoginActivity extends AppCompatActivity {
 
         Bundle extras = i.getExtras();
         if(extras != null){
+            tituloVotacao = extras.getString("titulo");
+            titulo.setText(tituloVotacao);
             System.out.println("Tem os extras");
             if (extras.containsKey("votacao")) {
                 Votacao votacao = extras.getParcelable("votacao");
-                titulo.setText(votacao.getNome());
-
             }
             if(extras.containsKey("chapas")){
                 System.out.println("Tem as chapas");
@@ -169,6 +170,7 @@ public class LoginActivity extends AppCompatActivity {
                                                                 Intent intent = new Intent(LoginActivity.this, opcoes_de_voto.class);
                                                                 intent.putExtra("nomeVotacao", titulo.getText().toString());
                                                                 intent.putExtra("chapas",chapas);
+                                                                intent.putExtra("titulo",tituloVotacao);
                                                                 intent.putExtra("user",usuario.getCpf());
                                                                 startActivity(intent);
                                                                 finish();
@@ -216,6 +218,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                System.exit(0);
             }
         });
     }

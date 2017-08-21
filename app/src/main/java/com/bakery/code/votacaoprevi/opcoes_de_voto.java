@@ -25,6 +25,7 @@ public class opcoes_de_voto extends Activity {
     private RadioGroup radioGroup;
 
     private String userCpf;
+    private String tituloVotacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +41,7 @@ public class opcoes_de_voto extends Activity {
 
         sair.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(opcoes_de_voto.this, LoginActivity.class);
-                startActivity(intent);
+            public void onClick(View v) {finish();
 
             }
         });
@@ -52,6 +51,8 @@ public class opcoes_de_voto extends Activity {
         Bundle extras = i.getExtras();
 
         if(extras != null){
+            tituloVotacao = extras.getString("titulo");
+            titulo.setText(tituloVotacao);
             System.out.println("Tem os extras");
             if(extras.containsKey("user")){
                 userCpf = extras.getString("user");
@@ -96,6 +97,7 @@ public class opcoes_de_voto extends Activity {
                         intent.putExtra("userCpf",userCpf);
                         intent.putExtra("chapaEscolhida",chapaEscolhida.toString());
                         startActivity(intent);
+                        finish();
 
                     }
                 });
@@ -104,6 +106,12 @@ public class opcoes_de_voto extends Activity {
         });
 
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        listChapas.clear();
     }
 
     private void createRadioButtons(int size, RadioGroup radioGroup, ArrayList<JSONObject> list) throws JSONException {

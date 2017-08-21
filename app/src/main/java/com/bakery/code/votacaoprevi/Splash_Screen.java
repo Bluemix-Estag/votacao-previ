@@ -38,6 +38,7 @@ public class Splash_Screen extends Activity {
     private JSONObject votacaoData;
     private Votacao votacao;
     private static final String LOG_TAG = "Connectivity";
+    private String tituloVotacao ="";
 
 
 
@@ -92,6 +93,7 @@ public class Splash_Screen extends Activity {
 
                                 //Recuperar informaçoes da votacao
                                 String nomeVotacao = votacaoAtual.getString("nome");
+                                tituloVotacao = votacaoAtual.getString("nome");
                                 String infoVotacao = votacaoAtual.getString("info");
                                 String iniVotacao = votacaoAtual.getString("iniVotacao");
                                 String fimVotacao = votacaoAtual.getString("fimVotacao");
@@ -143,6 +145,7 @@ public class Splash_Screen extends Activity {
 
     private void showLogin(Votacao v, JSONArray chapas) {
         Intent intent = new Intent(Splash_Screen.this, LoginActivity.class);
+        intent.putExtra("titulo",tituloVotacao);
         intent.putExtra("votacao",v);
         intent.putExtra("chapas",chapas.toString());
         startActivity(intent);

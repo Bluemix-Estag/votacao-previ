@@ -36,6 +36,7 @@ public class Confirmar_voto extends Activity {
     private WLAuthorizationManager mfpAdapter;
     private Voto voto;
     private JSONObject votoJson;
+    private String tituloVotacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,8 @@ public class Confirmar_voto extends Activity {
         voto = new Voto();
 
         if(extras != null){
+            tituloVotacao = extras.getString("titulo");
+            titulo.setText(tituloVotacao);
             if(extras.containsKey("userCpf")){
                 userCpf = extras.getString("userCpf");
                 voto.setCpf(userCpf);
@@ -114,7 +117,9 @@ public class Confirmar_voto extends Activity {
                             public void onSuccess(WLResponse wlResponse) {
                                 System.out.println(wlResponse.getResponseText());
                                 Intent intent = new Intent(Confirmar_voto.this, Fim_voto.class);
+                                intent.putExtra("titulo",titulo.getText().toString());
                                 startActivity(intent);
+                                finish();
                             }
 
                             @Override
