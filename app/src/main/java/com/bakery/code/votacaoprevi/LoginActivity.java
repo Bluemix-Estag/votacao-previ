@@ -73,6 +73,10 @@ public class LoginActivity extends AppCompatActivity {
         login.setText("20274526301");
         senha.setText("123quatro");
 
+        client = MobileFirstAdapter.getMfpClient(this);
+
+        mfpAdapter = MobileFirstAdapter.getMfpInstance();
+
         //acessar extras vindo da splash screen
         Intent i = getIntent();
 
@@ -99,9 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //titulo.setText(votacao.getNome());
 
-        client = MobileFirstAdapter.getMfpClient(this);
 
-        mfpAdapter = MobileFirstAdapter.getMfpInstance();
 
         continuar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +143,28 @@ public class LoginActivity extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(AccessToken accessToken) {
                                                 System.out.println("Received token: " + accessToken);
+
+                                                URI oauthAdapterPath = null;
+                                                try {
+                                                    oauthAdapterPath = new URI("/adapters/OAuthAdapter/resource/oauth");
+                                                } catch (URISyntaxException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                WLResourceRequest requestOauth = new WLResourceRequest(oauthAdapterPath, WLResourceRequest.POST);
+                                                requestOauth.send(userJson, new WLResponseListener() {
+                                                    @Override
+                                                    public void onSuccess(WLResponse wlResponse) {
+                                                        System.out.println(wlResponse.getResponseText());
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(WLFailResponse wlFailResponse) {
+
+                                                    }
+                                                });
+
+                                                //
 
                                                 URI adapterPath = null;
                                                 try {
