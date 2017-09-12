@@ -128,8 +128,8 @@ public class LoginActivity extends AppCompatActivity {
                     final JSONObject userJson = new JSONObject();
 
                     try{
-                        userJson.put("cpf",usuario.getCpf());
-                        userJson.put("senha",usuario.getSenha());
+                        userJson.put("username",usuario.getCpf());
+                        userJson.put("password",usuario.getSenha());
                     }catch (JSONException e){
                         e.printStackTrace();
                     }
