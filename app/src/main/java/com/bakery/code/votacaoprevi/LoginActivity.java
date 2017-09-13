@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button Call;
     private TextView titulo;
     private static final String RECAPTCHA_TOKEN = "6LcO8iwUAAAAAPQqSDrqcgoQrg0wUYI2de_gLl_-";
-
+    private JSONObject oauthobj;
     private WLClient client;
     private WLAuthorizationManager mfpAdapter;
 
@@ -70,8 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         titulo = (TextView) findViewById(R.id.Titulo);
 
         //teste com credenciais
-        login.setText("20274526301");
-        senha.setText("123quatro");
+        login.setText("8759089");
+        senha.setText("123456");
 
         //acessar extras vindo da splash screen
         Intent i = getIntent();
@@ -126,17 +126,17 @@ public class LoginActivity extends AppCompatActivity {
                     final JSONObject userJson = new JSONObject();
 
                     try{
-                        userJson.put("cpf",usuario.getCpf());
-                        userJson.put("senha",usuario.getSenha());
+                        userJson.put("username",usuario.getCpf());
+                        userJson.put("password",usuario.getSenha());
                     }catch (JSONException e){
                         e.printStackTrace();
                     }
                     //Validação de CPF
-                    if (ValidaCPF.isCPF(Login) == true){
 
-                        SafetyNet.getClient(LoginActivity.this).verifyWithRecaptcha(RECAPTCHA_TOKEN).addOnSuccessListener(LoginActivity.this, new OnSuccessListener() {
-                                    @Override
-                                    public void onSuccess(Object o) {
+//                        SafetyNet.getClient(LoginActivity.this).verifyWithRecaptcha(RECAPTCHA_TOKEN)
+//                                .addOnSuccessListener(LoginActivity.this, new OnSuccessListener() {
+//                                    @Override
+//                                    public void onSuccess(Object o) {
                                         mfpAdapter.obtainAccessToken("", new WLAccessTokenListener() {
                                             @Override
                                             public void onSuccess(AccessToken accessToken) {
@@ -144,41 +144,35 @@ public class LoginActivity extends AppCompatActivity {
 
                                                 URI adapterPath = null;
                                                 try {
-                                                    adapterPath = new URI("/adapters/CloudantAdapter/resource/login");
+                                                    adapterPath = new URI("/adapters/OAuthAdapter/resource/oauth");
                                                 } catch (URISyntaxException e) {
                                                     e.printStackTrace();
                                                 }
 
                                                 WLResourceRequest request = new WLResourceRequest(adapterPath, WLResourceRequest.POST);
-
+                                                System.out.println("USER JSON : " + userJson.toString());
                                                 request.send(userJson,new WLResponseListener() {
                                                     @Override
                                                     public void onSuccess(WLResponse wlResponse) {
                                                         // Will print "Hello world" in LogCat.
                                                         Log.i("MobileFirst Acionado", "Success: " + wlResponse.getResponseText());
 
-                                                        try {
-                                                            if(wlResponse.getResponseJSON().getString("error").equals("true")){
-                                                                runOnUiThread(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        erro_mens.setText("Acesso negado, seu voto já foi registrado, agradecemos a sua participação!");
-                                                                        erro_img.setImageResource(android.R.drawable.ic_delete);
-                                                                    }
-                                                                });
-                                                            }else{
-                                                                Intent intent = new Intent(LoginActivity.this, opcoes_de_voto.class);
-                                                                intent.putExtra("nomeVotacao", titulo.getText().toString());
-                                                                intent.putExtra("chapas",chapas);
-                                                                intent.putExtra("titulo",tituloVotacao);
-                                                                intent.putExtra("user",usuario.getCpf());
-                                                                startActivity(intent);
-                                                                finish();
-                                                            }
+                                                        oauthobj = wlResponse.getResponseJSON();
 
+                                                        try{
+                                                            String oauth_token = oauthobj.getString("access_token");
+                                                            System.out.println("Token: " + oauth_token);
 
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
+                                                            Intent intent = new Intent(LoginActivity.this, opcoes_de_voto.class);
+                                                            intent.putExtra("nomeVotacao", titulo.getText().toString());
+                                                            intent.putExtra("chapas",chapas);
+                                                            intent.putExtra("titulo",tituloVotacao);
+                                                            intent.putExtra("user",usuario.getCpf());
+                                                            intent.putExtra("token",oauth_token);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }catch (Exception e){
+                                                            System.out.println(e);
                                                         }
                                                     }
 
@@ -195,21 +189,17 @@ public class LoginActivity extends AppCompatActivity {
                                             }
                                         });
                                     }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        erro_mens.setText("Erro no ReCaptcha!");
-                                        erro_img.setImageResource(android.R.drawable.ic_delete);
-                                    }
-                                });
-
-                    }else if (ValidaCPF.isCPF(Login) == false){
-                        Log.i("login","");
-                        erro_mens.setText("CPF inválido!");
-                        erro_img.setImageResource(android.R.drawable.ic_delete);
-                    }
-                }
+                                //})
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        erro_mens.setText("Erro no ReCaptcha!");
+//                                        erro_img.setImageResource(android.R.drawable.ic_delete);
+//                                    }
+//                                });
+//
+//
+//                }
             }
         });
 

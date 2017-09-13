@@ -26,6 +26,7 @@ public class opcoes_de_voto extends Activity {
 
     private String userCpf;
     private String tituloVotacao;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,10 @@ public class opcoes_de_voto extends Activity {
                     e.printStackTrace();
                 }
             }
+            if(extras.containsKey("token")){
+                System.out.println("token:" + extras.getString("token"));
+                token = extras.getString("token");
+            }
         }
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -96,6 +101,7 @@ public class opcoes_de_voto extends Activity {
                         intent.putExtra("nomeVotacao",titulo.getText().toString());
                         intent.putExtra("userCpf",userCpf);
                         intent.putExtra("chapaEscolhida",chapaEscolhida.toString());
+                        intent.putExtra("token",token);
                         startActivity(intent);
                         finish();
 

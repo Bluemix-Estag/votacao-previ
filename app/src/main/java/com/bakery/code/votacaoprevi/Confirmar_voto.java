@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bakery.code.votacaoprevi.helper.MobileFirstAdapter;
 import com.bakery.code.votacaoprevi.models.Voto;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 public class Confirmar_voto extends Activity {
 
@@ -37,6 +39,9 @@ public class Confirmar_voto extends Activity {
     private Voto voto;
     private JSONObject votoJson;
     private String tituloVotacao;
+    private JSONObject objRes;
+
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,9 @@ public class Confirmar_voto extends Activity {
                     e.printStackTrace();
                 }
             }
+            if(extras.containsKey("token")){
+                token = extras.getString("token");
+            }
 
 
         }
@@ -93,40 +101,95 @@ public class Confirmar_voto extends Activity {
                 mfpAdapter.obtainAccessToken("", new WLAccessTokenListener() {
                     @Override
                     public void onSuccess(AccessToken accessToken) {
-                        System.out.println("Received token: " + accessToken);
+
 
                         URI adapterPath = null;
                         try {
-                            adapterPath = new URI("/adapters/CloudantAdapter/resource/votar");
+                            adapterPath = new URI("/adapters/VotarJS/doVotar");
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
                         }
 
                         try {
                             votoJson = new JSONObject();
-                            votoJson.put("cpf", voto.getCpf());
-                            votoJson.put("chapa", voto.getChapa());
+                            votoJson.put("matricula", voto.getCpf());
+                            votoJson.put("voto", voto.getChapa());
+                            votoJson.put("access_token", token);
+
+                            System.out.println("VotoJSON: " + votoJson.toString());
                         }catch (JSONException e){
                             e.printStackTrace();
                         }
 
                         WLResourceRequest request = new WLResourceRequest(adapterPath, WLResourceRequest.POST);
+                        HashMap formparams = new HashMap();
 
-                        request.send(votoJson, new WLResponseListener() {
+
+                        formparams.put("params", "['"+voto.getCpf()+"','"+voto.getChapa()+"','"+token+"']");
+                        System.out.println("Formparams: " + formparams.get("params"));
+                        request.setQueryParameters(formparams);
+                        request.send(formparams, new WLResponseListener() {
                             @Override
                             public void onSuccess(WLResponse wlResponse) {
-                                System.out.println(wlResponse.getResponseText());
-                                Intent intent = new Intent(Confirmar_voto.this, Fim_voto.class);
-                                intent.putExtra("titulo",titulo.getText().toString());
-                                startActivity(intent);
-                                finish();
+                                objRes = wlResponse.getResponseJSON();
+
+                                try {
+                                    if(objRes.getString("codRetorno").equals("0")){
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                    Toast.makeText(Confirmar_voto.this, "Voto computado com Sucesso.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                    else if(objRes.getString("codRetorno").equals("3")){
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(Confirmar_voto.this, "Não é permitido alterar a data de votação de associado que já votou", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }else{
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Toast.makeText(Confirmar_voto.this, objRes.getString("msgRetorno"), Toast.LENGTH_SHORT).show();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println("Sucesso no voto." + wlResponse.getResponseText());
                             }
 
                             @Override
                             public void onFailure(WLFailResponse wlFailResponse) {
-
+                                System.out.println("Erro: " + wlFailResponse.getErrorMsg());
                             }
                         });
+//                        request.send(votoJson, new WLResponseListener() {
+//                            @Override
+//                            public void onSuccess(WLResponse wlResponse) {
+//                                System.out.println(wlResponse.getResponseText());
+//                                Intent intent = new Intent(Confirmar_voto.this, Fim_voto.class);
+//                                intent.putExtra("titulo",titulo.getText().toString());
+//                                startActivity(intent);
+//                                finish();
+//                            }
+//
+//                            @Override
+//                            public void onFailure(WLFailResponse wlFailResponse) {
+//                                System.out.println(wlFailResponse.getErrorMsg());
+//                            }
+//                        });
+
+
 
                     }
 

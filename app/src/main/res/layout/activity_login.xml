@@ -94,7 +94,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CPF"
+        android:text="Matrícula"
         android:textColor="@color/azul_previ"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/LOGIN"
