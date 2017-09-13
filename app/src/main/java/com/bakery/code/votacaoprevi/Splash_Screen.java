@@ -75,6 +75,9 @@ public class Splash_Screen extends Activity {
                             Toast.makeText(getApplicationContext(), "Conected to Mobile First Platform", Toast.LENGTH_SHORT).show();
                         }
                     });
+
+
+
                     URI adapterPath = null;
                     try {
                         adapterPath = new URI("/adapters/CloudantAdapter/resource/votacao");
@@ -130,6 +133,8 @@ public class Splash_Screen extends Activity {
 
                 }
             });
+
+
 
         }
 
